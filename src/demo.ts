@@ -1,7 +1,7 @@
 import { fetchJsonUnknown } from "./types/api";
 import { isPokemonJSON } from "./types/pokeType";
 
-async function fetchPokemon(name: string) {
+export async function fetchPokemonConsole(name: string) {
   const url: string = "https://pokeapi.co/api/v2/" + name;
 
   const response = await fetchJsonUnknown(url);
@@ -39,6 +39,6 @@ async function fetchPokemon(name: string) {
   }
 }
 
-fetchPokemon("pokemon/garchomp");
-fetchPokemon("penguin");
-fetchPokemon("ability/gluttony");
+// fetchPokemon("pokemon/garchomp");
+// fetchPokemon("penguin");
+// fetchPokemon("ability/gluttony");

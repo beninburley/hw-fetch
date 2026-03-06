@@ -1,3 +1,5 @@
+import { isPokemonJSON } from "./pokeType";
+
 export type FetchError =
   | { kind: "network"; message: string }
   | { kind: "http"; status: number; statusText: string }
@@ -29,5 +31,26 @@ export async function fetchJsonUnknown(url: string): Promise<Result<unknown>> {
     }
   } catch (e) {
     return { ok: false, error: { kind: "network", message: String(e) } };
+  }
+}
+
+export async function fetchPokemon(name: string): Promise<Result<unknown>> {
+  const url: string = "https://pokeapi.co/api/v2/" + name;
+
+  const response = await fetchJsonUnknown(url);
+  if (!response.ok) {
+    return response;
+  } else if (isPokemonJSON(response.data)) {
+    return {
+      ok: true,
+      data: {
+        name: response.data.species.name,
+        ability: response.data.abilities[0].ability.name,
+        type: response.data.types[0].type.name,
+        weight: response.data.weight,
+      },
+    };
+  } else {
+    console.log("Schema error for", url);
   }
 }
