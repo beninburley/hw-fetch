@@ -3,13 +3,17 @@ import { isPokemonJSON } from "./pokeType";
 export type FetchError =
   | { kind: "network"; message: string }
   | { kind: "http"; status: number; statusText: string }
-  | { kind: "parse"; message: string };
+  | { kind: "parse"; message: string }
+  | { kind: "schema"; message: string };
 
 export type Result<T> =
   | { ok: true; data: T }
   | { ok: false; error: FetchError };
 
-export async function fetchJsonUnknown(url: string): Promise<Result<unknown>> {
+export async function fetchJsonUnknown(
+  url: string,
+  signal?: AbortSignal,
+): Promise<Result<unknown>> {
   try {
     const result = await fetch(url);
     if (!result.ok) {
@@ -34,8 +38,11 @@ export async function fetchJsonUnknown(url: string): Promise<Result<unknown>> {
   }
 }
 
-export async function fetchPokemon(name: string): Promise<Result<unknown>> {
-  const url: string = "https://pokeapi.co/api/v2/" + name;
+export async function fetchPokemon(
+  name: string,
+  signal?: AbortSignal,
+): Promise<Result<unknown>> {
+  const url: string = "https://pokeapi.co/api/v2/pokemon/" + name.trim();
 
   const response = await fetchJsonUnknown(url);
   if (!response.ok) {
@@ -52,5 +59,9 @@ export async function fetchPokemon(name: string): Promise<Result<unknown>> {
     };
   } else {
     console.log("Schema error for", url);
+    return {
+      ok: false,
+      error: { kind: "schema", message: "Response did not match Pokemon" },
+    };
   }
 }
