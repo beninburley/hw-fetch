@@ -31,8 +31,8 @@ async function fetchPokemon(name: string) {
       response.data.abilities[0].ability.name,
       response.data.types[0].type.name,
       response.data.weight,
-      "full object:",
-      response.data,
+      "for",
+      url,
     );
   } else {
     console.log("Schema error for", url);
